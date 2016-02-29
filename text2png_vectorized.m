@@ -92,27 +92,19 @@ function im = embedBits(im, bitSeq, pos)
   [maxX, maxY, maxZ] = size(im);
   z=1;
   im(:,:,pos) = (im(:,:,pos).-mod(im(:,:,pos),2));
-  for x=1:maxX
-    for y=1:maxY
-      if bitSeq(z) == 1
-         im(x,y,pos) = im(x,y,pos)+1;
-      endif
-      z++;
-      if z>bitNum
-        z=1;
-      endif
-    endfor
-  endfor
+  im_size = (size(im(:,:,pos)));
+  reshapedBitSeq = repmat(bitSeq,im_size);
+  reshapedBitSeq = reshapedBitSeq(1:maxX,1:maxY);
+  equals_one = reshapedBitSeq==1;
+  added_one = im(:,:,pos).+equals_one;
+  im(:,:,pos) = added_one;
 endfunction
 
 function bitSeq = getBits(im, pos)
-  bitSeq = [];
   [maxX, maxY, maxZ] = size(im);
-  for x=1:maxX
-    for y=1:maxY
-      bitSeq = [bitSeq, mod(im(x,y,pos),2)];
-    endfor
-  endfor
+  bitSeq = mod(im(:,:,pos),2);
+  ln = maxX * maxY;
+  bitSeq = resize(bitSeq,1,ln);
 endfunction
 
 clear;
