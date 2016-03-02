@@ -121,8 +121,8 @@ watermark_string = "dfsgdsf dfskgj dfjsgkdfsj gnjksdfeg";
 pos = 1;
 
 disp('get image');
-cover_image = zeros(1136,640,3);
-cover_image = imread("test01.jpg");
+cover_image = ones(1136,640,3);
+cover_image = imread("test02.jpg");
 disp('get bitseq');
 bitstr = toBits(watermark_string);
 disp('imbed');
@@ -137,18 +137,18 @@ figure('name', "imWM");imshow(imWM);
 %filter with averaging
 g = @(d) exp(-(d./50).^2);
 imWM_filtered = imsmooth(imWM, "p&m", 2, 0.065, g);
-%figure;
-%imshow(imWM_filtered);
+figure;
+imshow(imWM_filtered);
 %d = imWM_filtered - imWM;
 %figure('name', "Average - embeded");imshow(d);
 %figure('name', "Averaged");imshow(imWM_filtered);
-%d = cover_image - imWM;
+d = imWM - imWM_filtered;
 
-d = imWM_filtered - imWM;
+%d = abs(imWM_filtered - imWM);
 figure('name', "Embeded - Cover");
 imshow(d);
 disp('get bits');
-
+%cat_image = zeros(1136,640,3);
 added_cover_mark = d + cover_image;
 figure('name', "Approx + Cover");imshow(added_cover_mark);
 bitseq = getBits(added_cover_mark, pos);
