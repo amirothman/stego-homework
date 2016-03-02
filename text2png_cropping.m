@@ -1,4 +1,4 @@
-%pkg install "image-2.4.1.tar.gz";
+% pkg install "image-1.0.10.tar.gz";
 %pkg load all;
 %pkg install "control-2.8.5.tar.gz";
 %pkg install "signal-1.3.2.tar.gz";
@@ -121,13 +121,17 @@ bitstr = toBits(watermark_string);
 disp('imbed');
 WMWork = embedBits(cover_image , bitstr, pos);
 
-disp(strcat('Quality at:  ',num2str(I)));
 file_name = strcat("test01_with_payload.png");
 imwrite(WMWork,file_name);
+
 disp('get image');
 imWM=imread(file_name);
+disp(size(imWM));
+rect = [1 1 50 50];
+imWM_crop=imcrop(imWM,rect);
 disp('get bits');
 bitseq = getBits(imWM, pos);
+
 disp('get string');
 str = toString(bitseq);
 disp(str);

@@ -121,15 +121,19 @@ bitstr = toBits(watermark_string);
 disp('imbed');
 WMWork = embedBits(cover_image , bitstr, pos);
 
-disp(strcat('Quality at:  ',num2str(I)));
-file_name = strcat("test01_with_payload.png");
-imwrite(WMWork,file_name);
-disp('get image');
-imWM=imread(file_name);
-disp('get bits');
-bitseq = getBits(imWM, pos);
-disp('get string');
-str = toString(bitseq);
-disp(str);
+for I=20:20:100
+
+  disp(strcat('Quality at:  ',num2str(I)));
+  file_name = strcat("test01_with_payload_jpg_compression_",num2str(I),".jpg");
+  imwrite(WMWork,file_name,'Quality',I);
+  disp('get image');
+  imWM=imread(file_name);
+  disp('get bits');
+  bitseq = getBits(imWM, pos);
+  disp('get string');
+  str = toString(bitseq);
+  disp(str);
+
+endfor
 
 break;

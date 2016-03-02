@@ -34,5 +34,15 @@ Convert Bits to String
 
 ### getBits()
 
+    1. modulus 2 embedded. The output of this function is ones and zeros. These bits would correspond to the WatermarkStringBits
+
+## How secure is the system? Discuss whether usual image transformations can manipulate the embedded payload (Robustness)
+
+### Security
+
+
+
+### Robustness
+
 
 
