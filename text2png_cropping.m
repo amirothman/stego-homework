@@ -1,4 +1,4 @@
-% pkg install "image-1.0.10.tar.gz";
+%pkg install "image-2.4.1.tar.gz";
 %pkg load all;
 %pkg install "control-2.8.5.tar.gz";
 %pkg install "signal-1.3.2.tar.gz";
@@ -109,7 +109,7 @@ endfunction
 
 clear;
 
-watermark_string = "Hi, some test text!";
+watermark_string = "H2sdf";
 
 %RGB channel
 pos = 1;
@@ -126,11 +126,26 @@ imwrite(WMWork,file_name);
 
 disp('get image');
 imWM=imread(file_name);
+[dimX,dimY,dimZ] = size(imWM);
+
+crop_to_percentage = 0.01;
+initial_x = round((1 - crop_to_percentage)*dimX);
+initial_y = round((1 - crop_to_percentage)*dimY);
+
+width = round(crop_to_percentage*dimX);
+height = round(crop_to_percentage*dimY);
 disp(size(imWM));
-rect = [1 1 50 50];
-imWM_crop=imcrop(imWM,rect);
+
+
+%rect = [1 1 639 1135];
+rect = [1 1 64 1]
+[imWM_cropped, rectangle_cropped]=imcrop(imWM,rect);
+imshow(imWM);
+figure;
+imshow(imWM_cropped);
+disp(size(imWM_cropped));
 disp('get bits');
-bitseq = getBits(imWM, pos);
+bitseq = getBits(imWM_cropped, pos);
 
 disp('get string');
 str = toString(bitseq);

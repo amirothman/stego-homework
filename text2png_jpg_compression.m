@@ -109,7 +109,7 @@ endfunction
 
 clear;
 
-watermark_string = "Hi, some test text!";
+watermark_string = " test text!Hi, some";
 
 %RGB channel
 pos = 1;
