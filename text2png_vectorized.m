@@ -95,8 +95,8 @@ function im = embedBits(im, bitSeq, pos)
   im_size = (size(im(:,:,pos)));
   reshapedBitSeq = repmat(bitSeq,im_size);
   reshapedBitSeq = reshapedBitSeq(1:maxX,1:maxY);
-  equals_one = reshapedBitSeq==1;
-  added_one = im(:,:,pos)+equals_one;
+  % equals_one = reshapedBitSeq==1;
+  added_one = im(:,:,pos)+reshapedBitSeq;
   im(:,:,pos) = added_one;
 endfunction
 
