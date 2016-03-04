@@ -23,7 +23,7 @@ watermark_string = "dfsgdsf dfskgj";
 concated = strcat(watermark_string,description);
 hashed_concated = md5sum(concated,true);
 
-keypair=Generate_Key_Pair(143, 7, 1);
+keypair=Generate_Key_Pair(143, 7, 0.9);
 
 cipher=crypt(hashed_concated, keypair.pub);
 
