@@ -111,12 +111,11 @@ function im = embedBits(im, bitSeq, pos)
 endfunction
 
 function bitSeq = getBits(im, pos)
+  disp('slow getBits')
   bitSeq = [];
   [maxX, maxY, maxZ] = size(im);
   for x=1:maxX
     for y=1:maxY
-      disp('bitseq..');
-      disp(bitSeq);
       bitSeq = [bitSeq, mod(im(x,y,pos),2)];
     endfor
   endfor

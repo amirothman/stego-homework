@@ -1,4 +1,4 @@
-
+run amirDecimal
 run controller
 run rsa
 %RGB channel
@@ -32,14 +32,17 @@ bitstr = signature2bits(cipher);
 disp('imbed');
 WMWork = embedBits(cover_image , bitstr, pos);
 
-file_name = strcat("test01_with_payload.png");
-imwrite(WMWork,file_name);
-disp('get image');
-imWM=imread(file_name);
+% file_name = strcat("test01_with_payload.png");
+% imwrite(WMWork,file_name);
+% disp('get image');
+% imWM=imread(file_name);
 disp('get bits');
-bitseq = getBits(imWM, pos);
+bitseq = getBits(WMWork, pos);
 disp('get ciphertext');
 str = toDecimal(bitseq);
 disp(str);
+pt = uncrypt(str,keypair.priv);
 
+disp("plain text");
+disp(pt);
 break;  

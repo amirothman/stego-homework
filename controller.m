@@ -52,20 +52,18 @@ function bitstr = signature2bits(str)
   bytestr = str;
   [q, anz] = size(bytestr);
   bitstr = [];
-  for I=1:16
-    bitstr = [bitstr, 0];
-  endfor
-  for I=1:16
-    bitstr = [bitstr, 1];
-  endfor
+  
+  bitstr = [bitstr,zeros(1,16)];
+
+
+  bitstr = [bitstr, ones(1,16)];
+  
   for I=1:anz
     val = bytestr(I);
-    binstring = dec2bin(val,17);
+    binstring = dec2bin(val,18);
     bitstr = [bitstr,binstring2stream(binstring)];
   endfor
-  for I=1:20
-    bitstr = [bitstr, 0];
-  endfor
+  % bitstr = [bitstr, zeros(1,20)];
 endfunction
 
 function str = toString(bitstr)
@@ -125,82 +123,116 @@ function str = toString(bitstr)
   endif
 endfunction
 
-function str = toDecimal(bitstr)
-  [q, maxanz] = size(bitstr);
-  str='';
-  subbytsstr = [];
-  start = 1;
-  startok = 0;
-  while startok<32 && start < maxanz
-    while startok<16 && start < maxanz
-      if bitstr(start)==0
-        startok++;
-      else
-        startok=0;
-      endif
-      start++;
-    endwhile
-    while startok>=16 && startok<32 && start < maxanz
-      if bitstr(start)==1
-        startok++;
-      else
-        startok=0;
-      endif
-      start++;
-    endwhile
-  endwhile
-  aktpos = start;
+% function str = toDecimal(bitstr)
+%   [q, maxanz] = size(bitstr);
+%   str='';
+%   subbytsstr = [];
+%   start = 1;
+%   startok = 0;
+%   while startok<32 && start < maxanz
+%     while startok<16 && start < maxanz
+%       if bitstr(start)==0
+%         startok++;
+%       else
+%         startok=0;
+%       endif
+%       start++;
+%     endwhile
+%     while startok>=16 && startok<32 && start < maxanz
+%       if bitstr(start)==1
+%         startok++;
+%       else
+%         startok=0;
+%       endif
+%       start++;
+%     endwhile
+%   endwhile
+%   aktpos = start;
 
-  subI = [];
-  anzN = 0;
+%   subI = [];
+%   anzN = 0;
 
-  while aktpos <= maxanz
-    nextA = 1;
-    subA = [];
+%   while aktpos <= maxanz
+%     nextA = 1;
+%     subA = [];
 
-    while nextA <= 17 && aktpos <= maxanz
-      subA = [subA, num2str(bitstr(aktpos))];
-      if bitstr(aktpos)==0
-        anzN++;
-      else
-        anzN=0;
-      endif
-      if anzN==20
-        aktpos=maxanz+1;
-      endif
-      nextA++;
-      aktpos++;
-    endwhile
+%     while nextA <= 17 && aktpos <= maxanz
+%       subA = [subA, num2str(bitstr(aktpos))];
+%       if bitstr(aktpos)==0
+%         anzN++;
+%       else
+%         anzN=0;
+%       endif
+%       if anzN==20
+%         aktpos=maxanz+1;
+%       endif
+%       nextA++;
+%       aktpos++;
+%     endwhile
     
-    subI = [subI,bin2dec(strcat(subA))];
+%     subI = [subI,bin2dec(strcat(subA))];
     
-    % disp(anzN);
+%     % disp(anzN);
     
 
-    str = subI;
+%     str = subI;
 
-  endwhile
+%   endwhile
 
-endfunction
+% endfunction
+
+% function im = embedBits(im, bitSeq, pos)
+%   [q, bitNum] = size(bitSeq);
+%   [maxX, maxY, maxZ] = size(im);
+%   z = 1;
+%   im(:,:,pos) = (im(:,:,pos)-mod(im(:,:,pos),2));
+%   im_size = (size(im(:,:,pos)));
+%   reshapedBitSeq = repmat(bitSeq,im_size);
+%   reshapedBitSeq = reshapedBitSeq(1:maxX,1:maxY);
+%   % equals_one = reshapedBitSeq==1;
+%   added_one = im(:,:,pos)+reshapedBitSeq;
+%   im(:,:,pos) = added_one;
+% endfunction
 
 function im = embedBits(im, bitSeq, pos)
+  disp('slow embedBits');
   [q, bitNum] = size(bitSeq);
   [maxX, maxY, maxZ] = size(im);
-  z = 1;
-  im(:,:,pos) = (im(:,:,pos)-mod(im(:,:,pos),2));
-  im_size = (size(im(:,:,pos)));
-  reshapedBitSeq = repmat(bitSeq,im_size);
-  reshapedBitSeq = reshapedBitSeq(1:maxX,1:maxY);
-  % equals_one = reshapedBitSeq==1;
-  added_one = im(:,:,pos)+reshapedBitSeq;
-  im(:,:,pos) = added_one;
+  z=1;
+  
+  % For one channel from RGB
+  % Subtract one to odd pixels (elementwise).
+  im(:,:,pos) = (im(:,:,pos).-mod(im(:,:,pos),2));
+
+  for x=1:maxX
+    for y=1:maxY
+      if bitSeq(z) == 1
+         im(x,y,pos) = im(x,y,pos)+1;
+      endif
+      z++;
+      if z>bitNum
+        z=1;
+      endif
+    endfor
+  endfor
 endfunction
 
+% function bitSeq = getBits(im, pos)
+%   [maxX, maxY, maxZ] = size(im);
+%   bitSeq = mod(im(:,:,pos),2);
+%   ln = maxX * maxY;
+%   bitSeq = resize(bitSeq,1,ln);
+% endfunction
+
 function bitSeq = getBits(im, pos)
+  disp('slow getBits')
+  bitSeq = [];
   [maxX, maxY, maxZ] = size(im);
-  bitSeq = mod(im(:,:,pos),2);
-  ln = maxX * maxY;
-  bitSeq = resize(bitSeq,1,ln);
+  for x=1:maxX
+    for y=1:maxY
+      bitSeq = [bitSeq, mod(im(x,y,pos),2)];
+    endfor
+  endfor
 endfunction
 
 function bitSeq = reshapeD(im,pos)
