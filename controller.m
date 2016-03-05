@@ -8,12 +8,9 @@ function bitstr = toBits(str)
   bytestr = toascii(str);
   [q, anz] = size(bytestr);
   bitstr = [];
-  for I=1:16
-    bitstr = [bitstr, 0];
-  endfor
-  for I=1:16
-    bitstr = [bitstr, 1];
-  endfor
+  bitstr = [bitstr, zeros(1,16)];
+  bitstr = [bitstr, ones(1,16)];
+
   for I=1:anz
     val = bytestr(I);
     for J=1:8
@@ -24,9 +21,6 @@ function bitstr = toBits(str)
         bitstr = [bitstr, 0];
       endif
     endfor
-  endfor
-  for I=1:8
-    bitstr = [bitstr, 0];
   endfor
 endfunction
 
@@ -48,22 +42,17 @@ function dec = binstream2dec(str)
     bitstream = binstream;
 endfunction
 
-function bitstr = signature2bits(str)
+function bitstr = signature2bits(watermark,str)
   bytestr = str;
   [q, anz] = size(bytestr);
-  bitstr = [];
   
-  bitstr = [bitstr,zeros(1,16)];
-
-
-  bitstr = [bitstr, ones(1,16)];
   
   for I=1:anz
     val = bytestr(I);
     binstring = dec2bin(val,18);
-    bitstr = [bitstr,binstring2stream(binstring)];
+    watermark = [watermark,binstring2stream(binstring)];
   endfor
-  % bitstr = [bitstr, zeros(1,20)];
+  bitstr = watermark;
 endfunction
 
 function str = toString(bitstr)
