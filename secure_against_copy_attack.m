@@ -27,6 +27,10 @@ keypair=Generate_Key_Pair(143, 7, 0.9);
 
 cipher=crypt(hashed_concated, keypair.pub);
 
+disp('cipher size');
+disp(size(cipher));
+
+
 disp('get bitseq');
 bitstr = signature2bits(cipher);
 disp('imbed');
