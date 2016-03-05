@@ -173,41 +173,41 @@ endfunction
 
 % endfunction
 
-% function im = embedBits(im, bitSeq, pos)
-%   [q, bitNum] = size(bitSeq);
-%   [maxX, maxY, maxZ] = size(im);
-%   z = 1;
-%   im(:,:,pos) = (im(:,:,pos)-mod(im(:,:,pos),2));
-%   im_size = (size(im(:,:,pos)));
-%   reshapedBitSeq = repmat(bitSeq,im_size);
-%   reshapedBitSeq = reshapedBitSeq(1:maxX,1:maxY);
-%   % equals_one = reshapedBitSeq==1;
-%   added_one = im(:,:,pos)+reshapedBitSeq;
-%   im(:,:,pos) = added_one;
-% endfunction
-
 function im = embedBits(im, bitSeq, pos)
-  disp('slow embedBits');
   [q, bitNum] = size(bitSeq);
   [maxX, maxY, maxZ] = size(im);
-  z=1;
-  
-  % For one channel from RGB
-  % Subtract one to odd pixels (elementwise).
-  im(:,:,pos) = (im(:,:,pos).-mod(im(:,:,pos),2));
-
-  for x=1:maxX
-    for y=1:maxY
-      if bitSeq(z) == 1
-         im(x,y,pos) = im(x,y,pos)+1;
-      endif
-      z++;
-      if z>bitNum
-        z=1;
-      endif
-    endfor
-  endfor
+  z = 1;
+  im(:,:,pos) = (im(:,:,pos)-mod(im(:,:,pos),2));
+  im_size = (size(im(:,:,pos)));
+  reshapedBitSeq = repmat(bitSeq,im_size);
+  reshapedBitSeq = reshapedBitSeq(1:maxX,1:maxY);
+  % equals_one = reshapedBitSeq==1;
+  added_one = im(:,:,pos)+reshapedBitSeq;
+  im(:,:,pos) = added_one;
 endfunction
+
+% function im = embedBits(im, bitSeq, pos)
+%   disp('slow embedBits');
+%   [q, bitNum] = size(bitSeq);
+%   [maxX, maxY, maxZ] = size(im);
+%   z=1;
+  
+%   % For one channel from RGB
+%   % Subtract one to odd pixels (elementwise).
+%   im(:,:,pos) = (im(:,:,pos).-mod(im(:,:,pos),2));
+
+%   for x=1:maxX
+%     for y=1:maxY
+%       if bitSeq(z) == 1
+%          im(x,y,pos) = im(x,y,pos)+1;
+%       endif
+%       z++;
+%       if z>bitNum
+%         z=1;
+%       endif
+%     endfor
+%   endfor
+% endfunction
 
 % function bitSeq = getBits(im, pos)
 %   [maxX, maxY, maxZ] = size(im);

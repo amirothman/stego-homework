@@ -51,11 +51,3 @@ string_watermark = toString(watermark_extracted_padded);
 decimal_digital_signature = toDecimal(digital_signature);
 possible_hash = uncrypt(decimal_digital_signature,keypair.priv);
 second_hash = md5sum(strcat(string_watermark,description),true);
-% disp('get ciphertext');
-% str = toDecimal(bitseq);
-% disp(str);
-% pt = uncrypt(str,keypair.priv);
-
-% disp("plain text");
-% disp(pt);
-% break;  
