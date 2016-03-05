@@ -45,8 +45,6 @@ endfor
 %disp('binary_form');
 %disp(binary_form);
 
-%decode this mufuka
-
 function found = match_signature(signature,list)
   found = 1;
   for i=1:size(signature)(2)

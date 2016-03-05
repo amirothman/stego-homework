@@ -22,6 +22,9 @@ function bitstr = toBits(str)
       endif
     endfor
   endfor
+  for I=1:8
+    bitstr = [bitstr, 0];
+  endfor
 endfunction
 
 function bitstream = binstring2stream(str)

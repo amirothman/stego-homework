@@ -28,7 +28,10 @@ keypair=Generate_Key_Pair(143, 7, 0.9);
 cipher=crypt(hashed_concated, keypair.pub);
 
 disp('get bitseq');
-bitstr = signature2bits(cipher);
+
+bitstr = toBits(watermark_string);
+bitstr = signature2bits(bitstr,cipher);
+
 disp('imbed');
 WMWork = embedBits(cover_image , bitstr, pos);
 
@@ -38,11 +41,21 @@ WMWork = embedBits(cover_image , bitstr, pos);
 % imWM=imread(file_name);
 disp('get bits');
 bitseq = getBits(WMWork, pos);
-disp('get ciphertext');
-str = toDecimal(bitseq);
-disp(str);
-pt = uncrypt(str,keypair.priv);
+bitstream = toBitStream(bitseq);
+str = toString(bitseq);
+digital_signature = bitstream(size(bitstream)(2)-(18*45)+1:end);
 
-disp("plain text");
-disp(pt);
-break;  
+watermark_extracted = bitstream(1:(18*45));
+watermark_extracted_padded = [zeros(1,16),ones(1,16),watermark_extracted];
+string_watermark = toString(watermark_extracted_padded);
+decimal_digital_signature = toDecimal(digital_signature);
+possible_hash = uncrypt(decimal_digital_signature,keypair.priv);
+second_hash = md5sum(strcat(string_watermark,description),true);
+% disp('get ciphertext');
+% str = toDecimal(bitseq);
+% disp(str);
+% pt = uncrypt(str,keypair.priv);
+
+% disp("plain text");
+% disp(pt);
+% break;  

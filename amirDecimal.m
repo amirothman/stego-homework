@@ -57,7 +57,64 @@ function found = match_signature(signature,list)
   endfor
 endfunction
 
-function decimals = toDecimal(binary_form)
+% function decimals = toDecimal(binary_form)
+%   bit_length_for_number = 18;
+%   beginning_signature = [zeros(1,16),ones(1,16)];
+%   ending_signature = [zeros(1,20)]
+
+%   offset = 32;
+
+%   for i=1:size(binary_form)(2)
+%     if match_signature(beginning_signature,binary_form(i:end))
+%       disp('match_signature');
+%       disp(i);
+%       % offset += i+32-1;
+%       break
+%     endif
+%   endfor
+
+%   extracted = [];
+
+%   for i=1:size(binary_form)(2)
+%     extracted = [extracted,binary_form(i+offset)];
+%     if match_signature(beginning_signature,binary_form((1+i+offset):end))
+%       break
+%     endif
+%   endfor
+
+%   % disp(extracted);
+%   new_ct = []
+%   for i=1:bit_length_for_number:size(extracted)(2)+1-bit_length_for_number
+%     str_array = extracted(i:i+(bit_length_for_number-1));
+
+%     str ='';
+
+%     for j=1:size(str_array)(2)
+%       str = strcat(str,num2str(str_array(j)));
+%     endfor
+%     disp(str);
+%     disp(bin2dec(str));
+%     new_ct = [new_ct,bin2dec(str)];
+%   endfor
+
+%   decimals = new_ct;
+
+% endfunction
+
+function decimals = toDecimal(bitstream)
+  bit_length_for_number = 18;
+  decimals = [];
+  for i=1:18:size(bitstream)(2)
+    str = '';
+    for j=0:17
+      str = strcat(str,num2str(bitstream(i+j)));
+    endfor
+    decimals = [decimals, bin2dec(str)];
+  endfor
+endfunction
+
+
+function bitstream = toBitStream(binary_form)
   bit_length_for_number = 18;
   beginning_signature = [zeros(1,16),ones(1,16)];
   ending_signature = [zeros(1,20)]
@@ -82,24 +139,11 @@ function decimals = toDecimal(binary_form)
     endif
   endfor
 
-  % disp(extracted);
-  new_ct = []
-  for i=1:bit_length_for_number:size(extracted)(2)+1-bit_length_for_number
-    str_array = extracted(i:i+(bit_length_for_number-1));
-
-    str ='';
-
-    for j=1:size(str_array)(2)
-      str = strcat(str,num2str(str_array(j)));
-    endfor
-    disp(str);
-    disp(bin2dec(str));
-    new_ct = [new_ct,bin2dec(str)];
-  endfor
-
-  decimals = new_ct;
+  bitstream = extracted;
 
 endfunction
+
+
 % ct = new_ct;
 % pt = uncrypt(ct,kp.priv);
 
