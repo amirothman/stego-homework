@@ -88,24 +88,57 @@ function str = toString(bitstr)
 endfunction
 
 function im = embedBits(im, bitSeq, pos)
+  disp('slow embedBits');
   [q, bitNum] = size(bitSeq);
   [maxX, maxY, maxZ] = size(im);
-  z = 1;
-  im(:,:,pos) = (im(:,:,pos)-mod(im(:,:,pos),2));
-  im_size = (size(im(:,:,pos)));
-  reshapedBitSeq = repmat(bitSeq,im_size);
-  reshapedBitSeq = reshapedBitSeq(1:maxX,1:maxY);
-  % equals_one = reshapedBitSeq==1;
-  added_one = im(:,:,pos)+reshapedBitSeq;
-  im(:,:,pos) = added_one;
+  z=1;
+  
+  % For one channel from RGB
+  % Subtract one to odd pixels (elementwise).
+  im(:,:,pos) = (im(:,:,pos).-mod(im(:,:,pos),2));
+
+  for x=1:maxX
+    for y=1:maxY
+      if bitSeq(z) == 1
+         im(x,y,pos) = im(x,y,pos)+1;
+      endif
+      z++;
+      if z>bitNum
+        z=1;
+      endif
+    endfor
+  endfor
 endfunction
 
+% function im = embedBits(im, bitSeq, pos)
+%   [q, bitNum] = size(bitSeq);
+%   [maxX, maxY, maxZ] = size(im);
+%   z = 1;
+%   im(:,:,pos) = (im(:,:,pos)-mod(im(:,:,pos),2));
+%   im_size = (size(im(:,:,pos)));
+%   reshapedBitSeq = repmat(bitSeq,im_size);
+%   reshapedBitSeq = reshapedBitSeq(1:maxX,1:maxY);
+%   % equals_one = reshapedBitSeq==1;
+%   added_one = im(:,:,pos)+reshapedBitSeq;
+%   im(:,:,pos) = added_one;
+% endfunction
+
 function bitSeq = getBits(im, pos)
+  disp('slow getBits')
+  bitSeq = [];
   [maxX, maxY, maxZ] = size(im);
-  bitSeq = mod(im(:,:,pos),2);
-  ln = maxX * maxY;
-  bitSeq = resize(bitSeq,1,ln);
+  for x=1:maxX
+    for y=1:maxY
+      bitSeq = [bitSeq, mod(im(x,y,pos),2)];
+    endfor
+  endfor
 endfunction
+% function bitSeq = getBits(im, pos)
+%   [maxX, maxY, maxZ] = size(im);
+%   bitSeq = mod(im(:,:,pos),2);
+%   ln = maxX * maxY;
+%   bitSeq = resize(bitSeq,1,ln);
+% endfunction
 
 function bitSeq = reshapeD(im,pos)
   [maxX, maxY, maxZ] = size(im);
@@ -139,10 +172,10 @@ cover_image = imread("test02.jpg");
   % a = mod(cover_image + random_pixel_values,255);
 
 % endfor
-description = constructDescript(cover_image);
+% description = constructDescript(cover_image);
 watermark_string = "dfsgdsf dfskgj";
-concated = strcat(watermark_string,description);
-hashed_concated = md5sum(concated);
+% concated = strcat(watermark_string,description);
+% hashed_concated = md5sum(concated);
 
 disp('get bitseq');
 bitstr = toBits(watermark_string);
@@ -165,7 +198,7 @@ imshow(imWM_filtered);
 %figure('name', "Averaged");imshow(imWM_filtered);
 d = WMWork - imWM_filtered;
 
-%d = abs(imWM_filtered - imWM);
+d = abs(imWM_filtered - WMWork);
 figure('name', "Embeded - Cover");
 imshow(d(:,:,pos));
 disp('get bits');
