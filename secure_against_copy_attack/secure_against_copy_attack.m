@@ -44,9 +44,11 @@ bitseq = getBits(WMWork, pos);
 bitstream = toBitStream(bitseq);
 str = toString(bitseq);
 digital_signature = bitstream(size(bitstream)(2)-(18*45)+1:end);
-
+disp('extact watermark')
 watermark_extracted = bitstream(1:(18*45));
+disp('end beginning signature')
 watermark_extracted_padded = [zeros(1,16),ones(1,16),watermark_extracted];
+disp('')
 string_watermark = toString(watermark_extracted_padded);
 decimal_digital_signature = toDecimal(digital_signature);
 possible_hash = uncrypt(decimal_digital_signature,keypair.priv);
