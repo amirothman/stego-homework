@@ -121,15 +121,18 @@ bitstr = toBits(watermark_string);
 disp('imbed');
 WMWork = embedBits(cover_image , bitstr, pos);
 
-file_name = strcat("test01_with_payload.png");
-imwrite(WMWork,file_name);
+
+
+disp('add noise');
+imWM_noised = imnoise(WMWork,"gaussian");
+
+file_name = strcat("test01_with_noise_payload.png");
+imwrite(imWM_noised,file_name);
 disp('get image');
 imWM=imread(file_name);
 
-disp('add noise');
-imWM_noised = imnoise(imWM,"gaussian");
 disp('get bits');
-bitseq = getBits(imWM_noised, pos);
+bitseq = getBits(imWM, pos);
 disp('get string');
 str = toString(bitseq);
 disp(str);

@@ -143,6 +143,7 @@ rect = [1 1 64 1]
 imshow(imWM);
 figure;
 imshow(imWM_cropped);
+imwrite(imWM_cropped,"test_with_payload_cropped.png");
 disp(size(imWM_cropped));
 disp('get bits');
 bitseq = getBits(imWM_cropped, pos);

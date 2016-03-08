@@ -46,13 +46,20 @@ str = toString(bitseq);
 digital_signature = bitstream(size(bitstream)(2)-(18*45)+1:end);
 disp('extact watermark')
 watermark_extracted = bitstream(1:(18*45));
-disp('end beginning signature')
+% add zeros and ones to suit the decoding function
 watermark_extracted_padded = [zeros(1,16),ones(1,16),watermark_extracted];
-disp('')
+disp('get watermark string')
 string_watermark = toString(watermark_extracted_padded);
+disp(string_watermark);
+disp('get digital signature')
 decimal_digital_signature = toDecimal(digital_signature);
+disp('decrypt digital signature with private key')
 possible_hash = uncrypt(decimal_digital_signature,keypair.priv);
+disp(char(possible_hash));
+disp('hash watermark string with description');
 second_hash = md5sum(strcat(string_watermark,description),true);
+disp('authenticated if the two hash are the same');
+disp(second_hash);
 % disp('get ciphertext');
 % str = toDecimal(bitseq);
 % disp(str);
