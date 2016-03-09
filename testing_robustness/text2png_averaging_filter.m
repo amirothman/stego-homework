@@ -130,7 +130,7 @@ figure;
 imshow(imWM);
 %filter with averaging
 g = @(d) exp(-(d./50).^2);
-imWM_filtered = imsmooth(imWM, "p&m", 2, 0.065, g);
+imWM_filtered = imsmooth(imWM, "Average");
 figure('name','Gaussian');
 imshow(imWM_filtered);
 disp('get bits');
