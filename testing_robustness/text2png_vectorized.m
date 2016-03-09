@@ -95,8 +95,8 @@ function im = embedBits(im, bitSeq, pos)
   im_size = (size(im(:,:,pos)));
   reshapedBitSeq = repmat(bitSeq,im_size);
   reshapedBitSeq = reshapedBitSeq(1:maxX,1:maxY);
-  equals_one = reshapedBitSeq==1;
-  added_one = im(:,:,pos)+equals_one;
+  % equals_one = reshapedBitSeq==1;
+  added_one = im(:,:,pos)+reshapedBitSeq;
   im(:,:,pos) = added_one;
 endfunction
 
@@ -109,7 +109,7 @@ endfunction
 
 clear;
 
-watermark_string = " test text!Hi, some";
+watermark_string = "Hi, some test text!";
 
 %RGB channel
 pos = 1;
@@ -121,26 +121,21 @@ bitstr = toBits(watermark_string);
 disp('imbed');
 WMWork = embedBits(cover_image , bitstr, pos);
 
-for I=20:20:100
+disp(strcat('Quality at:  ',num2str(I)));
+file_name = strcat("test01_with_payload.png");
+imwrite(WMWork,file_name);
+disp('get image');
+imWM=imread(file_name);
+disp('get bits');
+bitseq = getBits(imWM, pos);
+disp('get string');
+str = toString(bitseq);
+disp(str);
 
-  disp(strcat('Quality at:  ',num2str(I)));
-  file_name = strcat("test01_with_payload_jpg_compression_",num2str(I),".jpg");
-  imwrite(WMWork,file_name,'Quality',I);
-  disp('get image');
-  imWM=imread(file_name);
-  disp('get bits');
-  bitseq = getBits(imWM, pos);
-  disp('get string');
-  str = toString(bitseq);
-  disp(str);
-  disp('similarity measure');
-  min_n = min(size(bitstr)(2),size(bitseq)(2));
-  similarity = similarity_measure(bitstr(:,1:min_n),bitseq(:,1:min_n));
-  disp(similarity);
-  disp('maximum similarity');
-  max_similarity = similarity_measure(bitstr(:,1:min_n),bitstr(:,1:min_n));
-  disp(max_similarity)
-  
-endfor
+disp(size(bitseq));
+disp(size(bitstr));
+disp('similarity measure');
+similarity = similarity_measure(bitstr,bitseq);
+disp(similarity);
 
 break;

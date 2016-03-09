@@ -1,10 +1,11 @@
-%pkg install "image-2.4.1.tar.gz";
+% pkg install "image-2.4.1.tar.gz";
 %pkg load all;
 %pkg install "control-2.8.5.tar.gz";
 %pkg install "signal-1.3.2.tar.gz";
 pkg load all;
 
 function bitstr = toBits(str)
+  % AScii characters to bitstrings
   bytestr = toascii(str);
   [q, anz] = size(bytestr);
   bitstr = [];
@@ -90,57 +91,69 @@ endfunction
 function im = embedBits(im, bitSeq, pos)
   [q, bitNum] = size(bitSeq);
   [maxX, maxY, maxZ] = size(im);
-  z = 1;
-  im(:,:,pos) = (im(:,:,pos)-mod(im(:,:,pos),2));
-  im_size = (size(im(:,:,pos)));
-  reshapedBitSeq = repmat(bitSeq,im_size);
-  reshapedBitSeq = reshapedBitSeq(1:maxX,1:maxY);
-  equals_one = reshapedBitSeq==1;
-  added_one = im(:,:,pos)+equals_one;
-  im(:,:,pos) = added_one;
+  z=1;
+  
+  % For one channel from RGB
+  % Subtract one to odd pixels (elementwise).
+  im(:,:,pos) = (im(:,:,pos).-mod(im(:,:,pos),2));
+
+  for x=1:maxX
+    for y=1:maxY
+      if bitSeq(z) == 1
+         im(x,y,pos) = im(x,y,pos)+1;
+      endif
+      z++;
+      if z>bitNum
+        z=1;
+      endif
+    endfor
+  endfor
 endfunction
 
 function bitSeq = getBits(im, pos)
+  disp('slow getBits')
+  bitSeq = [];
   [maxX, maxY, maxZ] = size(im);
-  bitSeq = mod(im(:,:,pos),2);
-  ln = maxX * maxY;
-  bitSeq = resize(bitSeq,1,ln);
+  for x=1:maxX
+    for y=1:maxY
+      bitSeq = [bitSeq, mod(im(x,y,pos),2)];
+    endfor
+  endfor
 endfunction
 
 clear;
 
-watermark_string = " test text!Hi, some";
+instr = "Hi, some test text!";
 
-%RGB channel
+%channel
 pos = 1;
 
 disp('get image');
-cover_image =imread('test01.jpg');
+imOrg=imread('test01.jpg');
+disp(typeinfo(imOrg));
 disp('get bitseq');
-bitstr = toBits(watermark_string);
+bitstr = toBits(instr);
+disp(bitstr);
 disp('imbed');
-WMWork = embedBits(cover_image , bitstr, pos);
+% embed image with bitstring at position
+% embedding fucntion
+WMWork = embedBits(imOrg, bitstr, pos);
+disp(typeinfo(WMWork));
+imwrite(WMWork,"test01_with_payload.png");
+disp('get image');
+imWM=imread('test01_with_payload.png');
 
-for I=20:20:100
+% extracting function
+disp('get bits');
+bitseq = getBits(imWM, pos);
+disp('get string');
+str = toString(bitseq);
+disp(str);
 
-  disp(strcat('Quality at:  ',num2str(I)));
-  file_name = strcat("test01_with_payload_jpg_compression_",num2str(I),".jpg");
-  imwrite(WMWork,file_name,'Quality',I);
-  disp('get image');
-  imWM=imread(file_name);
-  disp('get bits');
-  bitseq = getBits(imWM, pos);
-  disp('get string');
-  str = toString(bitseq);
-  disp(str);
-  disp('similarity measure');
-  min_n = min(size(bitstr)(2),size(bitseq)(2));
-  similarity = similarity_measure(bitstr(:,1:min_n),bitseq(:,1:min_n));
-  disp(similarity);
-  disp('maximum similarity');
-  max_similarity = similarity_measure(bitstr(:,1:min_n),bitstr(:,1:min_n));
-  disp(max_similarity)
-  
-endfor
+disp(bitseq);
+disp(bitstr);
+disp('similarity measure');
+similarity = similarity_measure(bitstr,bitseq);
+disp(similarity);
 
 break;

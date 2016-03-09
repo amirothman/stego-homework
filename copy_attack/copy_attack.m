@@ -210,6 +210,15 @@ bitseq = getBits(added_cover_mark, pos);
 disp('get string');
 str = toString(bitseq);
 disp(str);
+
+disp('similarity measure');
+min_n = min(size(bitstr)(2),size(bitseq)(2));
+similarity = similarity_measure(bitstr(:,1:min_n),bitseq(:,1:min_n));
+disp(similarity);
+disp('maximum similarity');
+max_similarity = similarity_measure(bitstr(:,1:min_n),bitstr(:,1:min_n));
+disp(max_similarity);
+
 % disp('get string appr.');
 % str_2 = toString(bitseq_2);
 

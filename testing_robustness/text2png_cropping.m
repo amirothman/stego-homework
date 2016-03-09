@@ -147,9 +147,21 @@ imwrite(imWM_cropped,"test_with_payload_cropped.png");
 disp(size(imWM_cropped));
 disp('get bits');
 bitseq = getBits(imWM_cropped, pos);
+disp(size(bitseq));
+disp(size(bitstr));
 
 disp('get string');
 str = toString(bitseq);
 disp(str);
+
+
+
+disp('similarity measure');
+min_n = min(size(bitstr)(2),size(bitseq)(2));
+similarity = similarity_measure(bitstr(:,1:min_n),bitseq(:,1:min_n));
+disp(similarity);
+disp('maximum similarity');
+max_similarity = similarity_measure(bitstr(:,1:min_n),bitstr(:,1:min_n));
+disp(max_similarity);
 
 break;
